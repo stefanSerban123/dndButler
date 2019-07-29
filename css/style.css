@@ -1,0 +1,49 @@
+#sidebar-wrapper .calc-button-line {
+    width: 21rem;
+}
+
+.selected {
+	background-color: red !important;
+}
+
+.init-table {
+	width: 21rem;
+}
+
+.rolls-bar {
+	margin-left: 4rem;
+}
+
+.rolls-display {
+	width: 16rem;
+	height: 3rem;
+}
+
+.roll-button {
+	height: 3rem;
+	width: 4rem;
+	margin-right: 5px;
+}
+
+.calc-display-wrapper {
+	padding-left: 1rem;
+	padding-right: 1.5rem;
+}
+
+.calc-display {
+	height: 6rem;
+	width: 100%;
+	font-size: 35px;
+	margin-bottom: 5px;
+} 
+
+.calc-button-line {
+	padding-left: 1rem;
+}
+
+.calc-button {
+	width: 6rem;
+    height: 6rem;
+    font-size: 35px;
+    margin-bottom: 5px;
+}
