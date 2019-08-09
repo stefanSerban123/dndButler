@@ -3,11 +3,17 @@
 }
 
 .selected {
-	background-color: red !important;
+	background-color: rgba(235, 40, 40, 0.58) !important;
+}
+
+.currentTurn {
+	border: 2px solid transparent;
+    border-color: red;
 }
 
 .init-table {
-	width: 21rem;
+	width: 100%;
+	margin-bottom: 2rem; 
 }
 
 .rolls-bar {

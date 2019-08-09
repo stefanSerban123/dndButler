@@ -8,7 +8,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Simple Sidebar - Start Bootstrap Template</title>
+  <title>DnD Butler</title>
 
   <!-- Bootstrap core CSS -->
   <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -65,7 +65,7 @@
     <!-- Page Content -->
     <div id="page-content-wrapper">
 
-      <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+      <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom" style="width:100%">
         <button class="btn btn-primary" id="menu-toggle">Toggle Numpad</button>
 
 		<div class="rolls-bar">
@@ -76,58 +76,110 @@
 			<button type="button" class="btn btn-info roll-button" data-ng-click="mainCtrl.roll(6)">d6</button>
 			<button type="button" class="btn btn-info roll-button" data-ng-click="mainCtrl.roll(4)">d4</button>
 			<button type="button" ng-disabled="!mainCtrl.selectedItem" class="btn btn-info roll-button" data-ng-click="mainCtrl.roll('>>')">>></button>
-			<button type="button" ng-disabled="!mainCtrl.currentRoll" class="btn btn-info roll-button" data-ng-click="mainCtrl.toCalc('+' + mainCtrl.currentRoll)">calc</button>
+			<button type="button" id="toCalc-toggle" ng-disabled="!mainCtrl.currentRoll" class="btn btn-info roll-button" data-ng-click="mainCtrl.toCalc('+' + mainCtrl.currentRoll)">calc</button>
 		</div>
 
-
-       
-
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
-            <li class="nav-item active">
-              <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Link</a>
-            </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Dropdown
-              </a>
-              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="#">Action</a>
-                <a class="dropdown-item" href="#">Another action</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">Something else here</a>
-              </div>
-            </li>
-          </ul>
-        </div>
       </nav>
 		<!-- ---------------------------------------------------------------------
 		
 											MAIN
 		
 		---------------------------------------------------------------------- -->
+		<!-- 							Encounter table 						-->
+	  <h4>Encounter table</h4>
       <div class="container-fluid">
 		<div class="init-table">
 			<table class="table table-striped">
 				<thead class="thead-dark">
 					<tr>
 						<th>Player</th>
-						<th><span>Init</span> <button type="button" class="btn btn-success float-right" ng-click="mainCtrl.toggleNewPlayer = !mainCtrl.toggleNewPlayer">+</button></th>
+						<th><span>Init</span></th>
+						<th>Hp</th>
+						<th>AC</th>
+						<th>Attack bonus</th>
+						<th>Description</th>
+						<th>
+							<button type="button" class="btn btn-info float-right" ng-click="mainCtrl.sortTable()">S</button>
+							<button type="button" class="btn btn-success float-right" ng-click="mainCtrl.toggleNewPlayer = !mainCtrl.toggleNewPlayer">+</button>
+							<button type="button" class="btn btn-success float-right" ng-click="mainCtrl.nextTurn()">T+</button>
+						</th>
 					</tr>
 				</thead>
-				<tr ng-repeat="player in mainCtrl.players track by $index" id="{{'u'+$index}}" ng-click="mainCtrl.selecty(mainCtrl.players[$index], 'u'+$index)">
+				<tr ng-repeat="player in mainCtrl.players track by $index" id="{{'u'+$index}}">
 					<td>{{player.name}}</td>
 					<td>
 						<div>{{player.value}}</div>
+					</td>
+					<td>
+						<div class="input-group mb-3">
+						  <div class="input-group-prepend">
+							<button class="btn btn-outline-secondary" type="button" ng-click="mainCtrl.decreaseHp(player)">-</button>
+						  </div>
+						  <button type="button" class="btn btn-success">{{ player.currentHp }} / {{ player.totalHp }}</button>
+						  <div class="input-group-append">
+							<button class="btn btn-outline-secondary" type="button" ng-click="mainCtrl.increaseHp(player)">+</button>
+						  </div>
+						</div>
+					</td>
+					<td>
+						{{ !!player.ac ? player.ac : 'n/a' }}
+					</td>
+					<td>
+						{{ !!player.attack ? '+' + player.attack : 'n/a' }}
+					</td>
+					<td>
+						{{ !!player.desc ? player.desc : 'n/a' }}
+					</td>
+					<td>
 						<button type="button" class="btn btn-danger float-right" ng-click="mainCtrl.removePlayer(player.name)">X</button>
+						<button type="button" class="btn btn-info float-right" ng-click="mainCtrl.selecty(mainCtrl.players[$index], 'u'+$index)">S</button>
+						
 					</td>
 				</tr>
 				<tr ng-if="mainCtrl.toggleNewPlayer">
-					<td><input type="text" class="form-control" aria-label="Name..." ng-model="mainCtrl.newPlayer"></td>
+					<td colspan=2><input type="text" class="form-control" aria-label="Name..." ng-model="mainCtrl.newPlayer"></td>
+					<td><input type="text" class="form-control" aria-label="TotalHp..." ng-model="mainCtrl.newHp">	</td>
 					<td><button type="button" class="btn btn-success float-right" ng-click="mainCtrl.saveNewPlayer()">K</button></td>
+				</tr>
+			</table>
+		</div>
+      </div>
+	  
+	  <!-- 							Monster table 						-->
+	  <h4>Monster Defaults Table</h4>
+	  <div class="container-fluid">
+		<div class="init-table">
+			<table class="table table-striped">
+				<thead class="thead-dark">
+					<tr>
+						<th>Name</th>
+						<th>Hp</th>
+						<th>AC</th>
+						<th>Attack bonus</th>
+						<th>Description</th>
+						<th>
+							<button type="button" class="btn btn-success float-right" ng-click="mainCtrl.toggleNewMonster = !mainCtrl.toggleNewMonster">+</button>			
+						</th>
+					</tr>
+				</thead>
+				<tr ng-repeat="monster in mainCtrl.monsterTable track by $index" id="{{'m'+$index}}">
+					<td> {{ monster.name }}</td>
+					<td> {{ monster.totalHp }}</td>
+					<td> {{ monster.ac }} </td>
+					<td> +{{ monster.attack }}</td>
+					<td> {{ monster.desc }} </td>
+					<td>
+						<button type="button" class="btn btn-danger float-right" ng-click="mainCtrl.removeMonster(monster.name)">X</button>
+						<button type="button" class="btn btn-success float-right" ng-click="mainCtrl.addMonsterToEncounter(monster)">Add</button>
+					</td>
+				</tr>
+				<tr ng-if="mainCtrl.toggleNewMonster">
+					<td><input type="text" class="form-control" aria-label="Name..." ng-model="mainCtrl.newMonsterName"></td>
+					<td><input type="text" class="form-control" aria-label="TotalHp..." ng-model="mainCtrl.newMonsterHp">	</td>
+					<td><input type="text" class="form-control" aria-label="TotalHp..." ng-model="mainCtrl.newMonsterAc">	</td>
+					<td><input type="text" class="form-control" aria-label="TotalHp..." ng-model="mainCtrl.newMonsterAttack">	</td>
+					<td><input type="text" class="form-control" aria-label="TotalHp..." ng-model="mainCtrl.newMonsterDesc">	</td>
+					<td><button type="button" class="btn btn-success float-right" ng-click="mainCtrl.saveNewMonster()">K</button></td>
 				</tr>
 			</table>
 		</div>
@@ -151,6 +203,13 @@
     $("#menu-toggle").click(function(e) {
       e.preventDefault();
       $("#wrapper").toggleClass("toggled");
+    });
+	 $("#toCalc-toggle").click(function(e) {
+      e.preventDefault();
+	  
+	  if ($( "#wrapper" ).hasClass( "toggled" )) {
+		$("#wrapper").toggleClass("toggled");
+	  }
     });
   </script>
 
