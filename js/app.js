@@ -4,18 +4,37 @@ angular.module('dndHelper', [])
 	  
 	  mainCtrl.calcDisplay = "";
 	  mainCtrl.players = [];
+	  mainCtrl.monsterTable = [];
 	  mainCtrl.toggleNewPlayer = false;
+	  mainCtrl.toggleNewMonster = false;
 	  mainCtrl.newPlayer = "";
+	  mainCtrl.newHp = "";
 	  mainCtrl.currentRoll = ""; 
 	  mainCtrl.rolled = "";
 	  mainCtrl.selectedItem;
 	  mainCtrl.selectedId;
-
+	  mainCtrl.encounterCounter = 0;
+	  mainCtrl.currentTurn = 0;
+	  
+	  mainCtrl.newMonsterName = "";
+	  mainCtrl.newMonsterHp = "";
+	  mainCtrl.newMonsterAc = "";
+	  mainCtrl.newMonsterAttack = "";
+	  mainCtrl.newMonsterDesc = "";
 	  
 	  var selected = "selected";
+	  var currentTurnSelector = "currentTurn";
+	
+	  var monster = function (name, hp, ac, attack, desc) {
+		  return { name: name, value:0, totalHp: hp, ac: ac, currentHp: hp, attack: attack, desc: desc, ordinal: 1}
+	  };
 	  
-	  var player = function (name) {
-		  return { name: name, value: 0 };
+	  var initMonsters = function () {
+		  mainCtrl.monsterTable.push(monster("Human", 10, 8, 13, "Typical human npc. Has shortsword d8+1")); 
+	  };
+	
+	  var player = function (name, hp) {
+		  return { name: name, value: 0, totalHp: hp, currentHp: hp };
 	  };
 	  
 	  // TODO: cookies
@@ -28,16 +47,18 @@ angular.module('dndHelper', [])
 	  
 	  mainCtrl.selecty = function (item, id) {
 		var prevEl =  angular.element( document.querySelector('#' + mainCtrl.selectedId) );
+		var state = prevEl.hasClass(selected);
+		
 		prevEl.removeClass(selected); 
 		mainCtrl.selectedItem = null;
-		 
-		if (mainCtrl.selectedId != id) {
+		
+		if (mainCtrl.selectedId != id || !state) {
 			var myEl = angular.element( document.querySelector('#' + id) );
 			myEl.addClass(selected);
-		
-			mainCtrl.selectedId = id;
-			mainCtrl.selectedItem = item;
 		}
+		
+		mainCtrl.selectedId = id;
+		mainCtrl.selectedItem = item;
 	  };
 	  
 	  mainCtrl.roll = function (val) {
@@ -51,17 +72,83 @@ angular.module('dndHelper', [])
 	  };
 	  
 	  mainCtrl.saveNewPlayer = function () {
-		  mainCtrl.players.push(player(mainCtrl.newPlayer));
+		  mainCtrl.players.push(player(mainCtrl.newPlayer, mainCtrl.newHp));
 		  mainCtrl.toggleNewPlayer = false;
 		  mainCtrl.newPlayer="";
+		  
+		  mainCtrl.encounterCounter++;
 	  };
 	  
 	  mainCtrl.removePlayer = function (name) {
-		  for(let i = 0; i < mai.nCtrl.players.length; i++){ 
+		  for(let i = 0; i < mainCtrl.players.length; i++){ 
 			   if (mainCtrl.players[i].name === name) {
 				  mainCtrl.players.splice(i, 1); 
 			   }
 			}
+		mainCtrl.encounterCounter--;
+	  };
+	    
+	mainCtrl.saveNewMonster = function () {
+		  mainCtrl.monsterTable.push(monster(mainCtrl.newMonsterName, mainCtrl.newMonsterHp, mainCtrl.newMonsterAc, mainCtrl.newMonsterAttack, mainCtrl.newMonsterDesc));
+		  mainCtrl.toggleNewMonster = false;
+	
+		mainCtrl.newMonsterName = "";
+		mainCtrl.newMonsterHp = "";
+		mainCtrl.newMonsterAc = "";
+		mainCtrl.newMonsterAttack = "";
+		mainCtrl.newMonsterDesc = "";
+	};
+	
+	mainCtrl.nextTurn = function () {
+		var prevEl =  angular.element( document.querySelector('#u' + ( mainCtrl.currentTurn - 1 )) );
+		prevEl.removeClass(currentTurnSelector); 
+		
+		if (mainCtrl.currentTurn == mainCtrl.encounterCounter) {
+			mainCtrl.currentTurn = 0;
+			return;
+		}
+		
+		var currentEl = angular.element( document.querySelector('#u' + mainCtrl.currentTurn) );
+		currentEl.addClass(currentTurnSelector);
+		
+		mainCtrl.currentTurn++;
+	};
+	  
+	  
+	  mainCtrl.removeMonster = function (name) {
+		  for(let i = 0; i < mainCtrl.monsterTable.length; i++){ 
+			   if (mainCtrl.monsterTable[i].name === name) {
+				  mainCtrl.monsterTable.splice(i, 1); 
+			   }
+			}
+	  };
+	  
+	  mainCtrl.sortTable = function () {
+		  mainCtrl.players = mainCtrl.players.sort(
+				function(a, b){
+					return +b.value - +a.value;
+				});
+	  };
+	  
+	  mainCtrl.addMonsterToEncounter = function (monster) {
+		mainCtrl.players.push(angular.copy(monster));  
+		mainCtrl.encounterCounter++;
+	  };
+	  
+	  mainCtrl.increaseHp = function (player) {
+		if (player.currentHp == player.totalHp) {
+			return;
+		}  
+		
+		player.currentHp++;
+	  };
+	  
+	  mainCtrl.decreaseHp = function (player) {
+		if (player.currentHp == 0) {
+			return;
+		}  
+		
+		player.currentHp--;
 	  };
 	  
 	  mainCtrl.toCalc = function (i) {
@@ -88,4 +175,5 @@ angular.module('dndHelper', [])
 		  
 	  };
 	  
+	  initMonsters();
   });
