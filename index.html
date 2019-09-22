@@ -131,7 +131,7 @@
 						{{ !!player.desc ? player.desc : 'n/a' }}
 					</td>
 					<td>
-						<button type="button" class="btn btn-danger float-right" ng-click="mainCtrl.removePlayer(player.name)">X</button>
+						<button type="button" class="btn btn-danger float-right" ng-click="mainCtrl.removePlayer($index)">X</button>
 						<button type="button" class="btn btn-info float-right" ng-click="mainCtrl.selecty(mainCtrl.players[$index], 'u'+$index)">S</button>
 						
 					</td>

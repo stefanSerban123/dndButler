@@ -30,7 +30,10 @@ angular.module('dndHelper', [])
 	  };
 	  
 	  var initMonsters = function () {
-		  mainCtrl.monsterTable.push(monster("Human", 10, 8, 13, "Typical human npc. Has shortsword d8+1")); 
+		  mainCtrl.monsterTable.push(monster("Human", 10, 8, 4, "Typical human npc. Has shortsword d8+1")); 
+		  mainCtrl.monsterTable.push(monster("LockBoss", 20, 15, 4, "Burning Hands: DEX save 3d6 dmg on fail, half on success. Eldritch Blast 1d10 dmg +2Att")); 
+		  mainCtrl.monsterTable.push(monster("Zombie", 1, 10, 2, "Lunge: +2Att 1d4?dmg")); 
+		  mainCtrl.monsterTable.push(monster("ZombieChief", 20, 10, 2, "Lunge + BRAAAINS!! Melee, DEX save, -4 INT untill rest, 2dmg"));
 	  };
 	
 	  var player = function (name, hp) {
@@ -79,12 +82,8 @@ angular.module('dndHelper', [])
 		  mainCtrl.encounterCounter++;
 	  };
 	  
-	  mainCtrl.removePlayer = function (name) {
-		  for(let i = 0; i < mainCtrl.players.length; i++){ 
-			   if (mainCtrl.players[i].name === name) {
-				  mainCtrl.players.splice(i, 1); 
-			   }
-			}
+	  mainCtrl.removePlayer = function (index) {			
+		mainCtrl.players.splice(index, 1); 
 		mainCtrl.encounterCounter--;
 	  };
 	    
