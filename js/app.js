@@ -26,14 +26,22 @@ angular.module('dndHelper', [])
 	  var currentTurnSelector = "currentTurn";
 	
 	  var monster = function (name, hp, ac, attack, desc) {
-		  return { name: name, value:0, totalHp: hp, ac: ac, currentHp: hp, attack: attack, desc: desc, ordinal: 1}
+		  return { name: name, 
+				   value:0, 
+				   totalHp: hp, 
+				   ac: ac, 
+				   currentHp: hp, 
+				   attack: attack, 
+				   desc: desc
+			};
 	  };
 	  
 	  var initMonsters = function () {
-		  mainCtrl.monsterTable.push(monster("Human", 10, 8, 4, "Typical human npc. Has shortsword d8+1")); 
-		  mainCtrl.monsterTable.push(monster("LockBoss", 20, 15, 4, "Burning Hands: DEX save 3d6 dmg on fail, half on success. Eldritch Blast 1d10 dmg +2Att")); 
-		  mainCtrl.monsterTable.push(monster("Zombie", 1, 10, 2, "Lunge: +2Att 1d4?dmg")); 
-		  mainCtrl.monsterTable.push(monster("ZombieChief", 20, 10, 2, "Lunge + BRAAAINS!! Melee, DEX save, -4 INT untill rest, 2dmg"));
+		  mainCtrl.monsterTable.push(monster("Commoner", 4, 10, 2, "Club. Melee Weapon Attack: 1d4"));
+		  mainCtrl.monsterTable.push(monster("Cultist", 9, 12, 3, "Scimitar. Melee Weapon Attack. Dmg (1d6 + 1) "));
+		  mainCtrl.monsterTable.push(monster("Gnoll", 22, 15, 4, "Bite: +4 hit, (1d4 + 2) piercing damage, Spear. Melee or Ranged. +4 to hit, Dmg (1d6 + 2) or (1d8 + 2) if used with two hands to make a melee attack."));
+		  mainCtrl.monsterTable.push(monster("ZombieDude", 20, 10, 2, "Lunge + BRAAAINS!! Melee, DEX save, -4 INT untill rest, 2dmg"));
+		  mainCtrl.monsterTable.push(monster("Thug", 32, 11, 4, "Mace. Melee Weapon Attack: +4 to hit, reach 5 ft., one creature. Hit: 5 (1d6 + 2) bludgeoning damage."));
 	  };
 	
 	  var player = function (name, hp) {
@@ -42,12 +50,7 @@ angular.module('dndHelper', [])
 	  
 	  // TODO: cookies
 	  // TODO: auto sort players + monsters initiative list $watch
-	  // TODO: monster table
-	  // TODO: player table becomes encounter table (should be main)
-	  // name initiative hp 
-	  // same for both players and monsters
-	  
-	  
+	  	  
 	  mainCtrl.selecty = function (item, id) {
 		var prevEl =  angular.element( document.querySelector('#' + mainCtrl.selectedId) );
 		var state = prevEl.hasClass(selected);
